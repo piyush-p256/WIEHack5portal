@@ -46,9 +46,9 @@
         </div>
         <div class="container-fluid p-5 col-8 d-flex flex-column justify-content-center align-items-center right-div">
             <h1 class="barlow-bold p-2" >LOGIN</h1>
-            {% if error %}
-            <p>{{ error }}</p>
-            {% endif %}
+            {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
             <form class="poppins-semibold" method="post">
                 {% csrf_token %}
                 <div class="mb-2">
