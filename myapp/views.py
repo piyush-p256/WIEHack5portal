@@ -4,6 +4,7 @@ from .utils import allocate_teams_to_judges
 from .models import Team, Round1, Round2, Round3, UniversalSettings, Judge
 from .forms import Round1Form, Round3UploadForm, Round2UploadForm
 from django.conf import settings
+from django.db.models import Q 
 
 
 
@@ -152,6 +153,8 @@ def judge_offline_login(request):
 
 
 #round 1 upload form 
+
+
 def round1_upload(request):
     team_email = request.session.get('team_email')  # Retrieve team_email from session
     universal_settings = UniversalSettings.objects.first()  # Get the UniversalSettings instance
@@ -165,7 +168,8 @@ def round1_upload(request):
                 
                 # Check if team_no and member_name belong to the same team in the Team model
                 try:
-                    team = Team.objects.get(team_no=team_no, team_leader=member_name)
+                    # Perform a case-insensitive match using iexact for team_no and member_name
+                    team = Team.objects.get(Q(team_no__iexact=team_no) & Q(team_leader__iexact=member_name))
                 except Team.DoesNotExist:
                     # Team not found for the given team_no and member_name
                     return render(request, 'round1-upload.html', {'form': form, 'error': 'Invalid team details!'})
@@ -182,7 +186,9 @@ def round1_upload(request):
         context = {'form': form, 'team_email': team_email}  # Pass email to the context
         return render(request, 'round1-upload.html', context)
     else:
-        return render(request, 'submission_not_started.html')
+        context = {'team_email': team_email}  # Pass email to the context
+        return render(request, 'submission_not_started.html', context)
+
 #allocate judges
 
 
@@ -285,25 +291,25 @@ def round2_upload(request):
                 
                 # Check if team_no and member_name belong to the same team in the Team model
                 try:
-                    team = Team.objects.get(team_no=team_no, team_leader=member_name)
+                    # Perform a case-insensitive match using iexact for team_no and member_name
+                    team = Team.objects.get(Q(team_no__iexact=team_no) & Q(team_leader__iexact=member_name))
                 except Team.DoesNotExist:
                     # Team not found for the given team_no and member_name
                     return render(request, 'round2-upload.html', {'form': form, 'error': 'Invalid team details!'})
                 
                 # Create and save Round1 object
-                round1_instance = form.save(commit=False)
-                round1_instance.team = team  # Link Round1 to the corresponding Team
-                round1_instance.save()
+                round2_instance = form.save(commit=False)
+                round2_instance.team = team  # Link Round2 to the corresponding Team
+                round2_instance.save()
         
                 return redirect('success_page')  # Redirect to success page after successful form submission
         else:
-            form = Round1Form()
+            form = Round2UploadForm()
         
         context = {'form': form, 'team_email': team_email}  # Pass email to the context
         return render(request, 'round2-upload.html', context)
     else:
         return render(request, 'submission_not_started.html')
-
 
 
 
@@ -322,19 +328,20 @@ def round3_upload(request):
                 
                 # Check if team_no and member_name belong to the same team in the Team model
                 try:
-                    team = Team.objects.get(team_no=team_no, team_leader=member_name)
+                    # Perform a case-insensitive match using iexact for team_no and member_name
+                    team = Team.objects.get(Q(team_no__iexact=team_no) & Q(team_leader__iexact=member_name))
                 except Team.DoesNotExist:
                     # Team not found for the given team_no and member_name
                     return render(request, 'round3-upload.html', {'form': form, 'error': 'Invalid team details!'})
                 
                 # Create and save Round1 object
-                round1_instance = form.save(commit=False)
-                round1_instance.team = team  # Link Round1 to the corresponding Team
-                round1_instance.save()
+                round3_instance = form.save(commit=False)
+                round3_instance.team = team  # Link Round3 to the corresponding Team
+                round3_instance.save()
         
                 return redirect('success_page')  # Redirect to success page after successful form submission
         else:
-            form = Round1Form()
+            form = Round3UploadForm()
         
         context = {'form': form, 'team_email': team_email}  # Pass email to the context
         return render(request, 'round3-upload.html', context)
