@@ -189,12 +189,8 @@ def round1_upload(request):
         context = {'team_email': team_email}  # Pass email to the context
         return render(request, 'submission_not_started.html', context)
 
-#allocate judges
 
-
-
-
-#online round
+#online round 1
 def judge_round1(request):
     judge_name = request.session.get('judge_name')  # Retrieve judge_name from session
     judges_count = len(Judge.objects.filter(mode='online'))  # Count online judges
