@@ -11,6 +11,7 @@ from django.db.models import Q
 #login
 def login(request):
     current_round = UniversalSettings.objects.first().current_round
+    error_message = None
     
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -18,23 +19,22 @@ def login(request):
         try:
             team = Team.objects.get(email=email, password=password)
             if team.round_no == current_round:
-                # Store team's email in session upon successful login
                 request.session['team_email'] = team.email
-                
                 if team.round_no == 1:
-                    return redirect('round1')  # Redirect to round1
+                    return redirect('round1')
                 elif team.round_no == 2:
-                    return redirect('round2')  # Redirect to round2
+                    return redirect('round2')
                 elif team.round_no == 3:
-                    return redirect('round3')  # Redirect to round3
+                    return redirect('round3')
                 elif team.round_no == 4:
-                    return redirect('round4')  # Redirect to round4
+                    return redirect('round4')
             else:
                 return redirect('not_selected')
         except Team.DoesNotExist:
-            messages.error(request, 'Invalid credentials!')
+            error_message = 'Invalid credentials!'
     
-    return render(request, 'login.html')
+    context = {'error_message': error_message}
+    return render(request, 'login.html', context)
 
 def round1(request):
     team_email = request.session.get('team_email')  # Retrieve team_email from session
@@ -82,27 +82,35 @@ def success_page(request):
 
 
 #judge online login logic
+
+
+
 def judge_online_login(request):
+    error_message = ''  # Initialize error message
+    
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
         try:
             judge = Judge.objects.get(email=email, password=password)
-            request.session['judge_name'] = judge.judge_name  # Store judge name in session
             current_round = UniversalSettings.objects.first().current_round
 
             if current_round == 1:
-                return redirect('judge_round1')
+                request.session['judge_name'] = judge.judge_name  # Store judge's name in session
+                return redirect('offline_judge_round1')
             elif current_round == 2:
-                return redirect('judge_round2')
+                request.session['judge_name'] = judge.judge_name  # Store judge's name in session
+                return redirect('offline_judge_round2')
             elif current_round == 3:
-                return redirect('judge_round3')
+                request.session['judge_name'] = judge.judge_name  # Store judge's name in session
+                return redirect('offline_judge_round3')
             else:
                 return redirect('invalid_round')  # Add this view for custom handling
 
         except Judge.DoesNotExist:
-            return render(request, 'on-judge-login.html', {'error': 'Invalid credentials!'})
-    return render(request, 'on-judge-login.html')
+            error_message = 'Invalid credentials!'
+    
+    return render(request, 'on-judge-login.html', {'error': error_message})
 
 
 
@@ -127,6 +135,8 @@ def offline_judge_round3(request):
 
 #off judge login logic
 def judge_offline_login(request):
+    error_message = ''  # Initialize error message
+    
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -147,50 +157,19 @@ def judge_offline_login(request):
                 return redirect('invalid_round')  # Add this view for custom handling
 
         except Judge.DoesNotExist:
-            messages.error(request, 'Invalid credentials!')
-            return render(request, 'off-judge-login.html')
-    return render(request, 'off-judge-login.html')
-
-
+            error_message = 'Invalid credentials!'
+    
+    return render(request, 'off-judge-login.html', {'error': error_message})
 #round 1 upload form 
 
 
-def round1_upload(request):
-    team_email = request.session.get('team_email')  # Retrieve team_email from session
-    universal_settings = UniversalSettings.objects.first()  # Get the UniversalSettings instance
 
-    if universal_settings and universal_settings.upload:  # Check if submissions are allowed
-        if request.method == 'POST':
-            form = Round1Form(request.POST)
-            if form.is_valid():
-                team_no = form.cleaned_data['team_no']
-                member_name = form.cleaned_data['member_name']
-                
-                # Check if team_no and member_name belong to the same team in the Team model
-                try:
-                    # Perform a case-insensitive match using iexact for team_no and member_name
-                    team = Team.objects.get(Q(team_no__iexact=team_no) & Q(team_leader__iexact=member_name))
-                except Team.DoesNotExist:
-                    # Team not found for the given team_no and member_name
-                    return render(request, 'round1-upload.html', {'form': form, 'error': 'Invalid team details!'})
-                
-                # Create and save Round1 object
-                round1_instance = form.save(commit=False)
-                round1_instance.team = team  # Link Round1 to the corresponding Team
-                round1_instance.save()
-        
-                return redirect('success_page')  # Redirect to success page after successful form submission
-        else:
-            form = Round1Form()
-        
-        context = {'form': form, 'team_email': team_email}  # Pass email to the context
-        return render(request, 'round1-upload.html', context)
-    else:
-        context = {'team_email': team_email}  # Pass email to the context
-        return render(request, 'submission_not_started.html', context)
+#allocate judges
 
 
-#online round 1
+
+
+#online round
 def judge_round1(request):
     judge_name = request.session.get('judge_name')  # Retrieve judge_name from session
     judges_count = len(Judge.objects.filter(mode='online'))  # Count online judges
@@ -270,76 +249,53 @@ def offline_judge_round3(request):
     return render(request, 'offline-judge-round3.html', context)
 
 
+#round1upload
+def round1_upload(request):
+    team_email = request.session.get('team_email')  # Retrieve team_email from session
+    
+    if request.method == 'POST':
+        form = Round1Form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('success_page')  # Redirect to success page or another URL
+    else:
+        form = Round1Form()
+    
+    context = {'form': form, 'team_email': team_email}  # Pass team_email to the context
+    return render(request, 'round1-upload.html', context)
+
+
 
 #round2upload
 
 
 def round2_upload(request):
     team_email = request.session.get('team_email')  # Retrieve team_email from session
-    universal_settings = UniversalSettings.objects.first()  # Get the UniversalSettings instance
-
-    if universal_settings and universal_settings.upload:  # Check if submissions are allowed
-        if request.method == 'POST':
-            form = Round2UploadForm(request.POST)
-            if form.is_valid():
-                team_no = form.cleaned_data['team_no']
-                member_name = form.cleaned_data['member_name']
-                
-                # Check if team_no and member_name belong to the same team in the Team model
-                try:
-                    # Perform a case-insensitive match using iexact for team_no and member_name
-                    team = Team.objects.get(Q(team_no__iexact=team_no) & Q(team_leader__iexact=member_name))
-                except Team.DoesNotExist:
-                    # Team not found for the given team_no and member_name
-                    return render(request, 'round2-upload.html', {'form': form, 'error': 'Invalid team details!'})
-                
-                # Create and save Round1 object
-                round2_instance = form.save(commit=False)
-                round2_instance.team = team  # Link Round2 to the corresponding Team
-                round2_instance.save()
-        
-                return redirect('success_page')  # Redirect to success page after successful form submission
-        else:
-            form = Round2UploadForm()
-        
-        context = {'form': form, 'team_email': team_email}  # Pass email to the context
-        return render(request, 'round2-upload.html', context)
+    
+    if request.method == 'POST':
+        form = Round2UploadForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('success_page')  # Redirect to success page or another URL
     else:
-        return render(request, 'submission_not_started.html')
-
+        form = Round2UploadForm()
+    
+    context = {'form': form, 'team_email': team_email}  # Pass team_email to the context
+    return render(request, 'round2-upload.html', context)
 
 
 #upload round3
 
 def round3_upload(request):
     team_email = request.session.get('team_email')  # Retrieve team_email from session
-    universal_settings = UniversalSettings.objects.first()  # Get the UniversalSettings instance
-
-    if universal_settings and universal_settings.upload:  # Check if submissions are allowed
-        if request.method == 'POST':
-            form = Round3UploadForm(request.POST)
-            if form.is_valid():
-                team_no = form.cleaned_data['team_no']
-                member_name = form.cleaned_data['member_name']
-                
-                # Check if team_no and member_name belong to the same team in the Team model
-                try:
-                    # Perform a case-insensitive match using iexact for team_no and member_name
-                    team = Team.objects.get(Q(team_no__iexact=team_no) & Q(team_leader__iexact=member_name))
-                except Team.DoesNotExist:
-                    # Team not found for the given team_no and member_name
-                    return render(request, 'round3-upload.html', {'form': form, 'error': 'Invalid team details!'})
-                
-                # Create and save Round1 object
-                round3_instance = form.save(commit=False)
-                round3_instance.team = team  # Link Round3 to the corresponding Team
-                round3_instance.save()
-        
-                return redirect('success_page')  # Redirect to success page after successful form submission
-        else:
-            form = Round3UploadForm()
-        
-        context = {'form': form, 'team_email': team_email}  # Pass email to the context
-        return render(request, 'round3-upload.html', context)
+    
+    if request.method == 'POST':
+        form = Round3UploadForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('success_page')  # Redirect to success page after form submission
     else:
-        return render(request, 'submission_not_started.html')
+        form = Round3UploadForm()
+    
+    context = {'form': form, 'team_email': team_email}  # Pass team_email to the context
+    return render(request, 'round3-upload.html', context)
