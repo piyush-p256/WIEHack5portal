@@ -15,4 +15,4 @@ class Round2UploadForm(forms.ModelForm):
 class Round3UploadForm(forms.ModelForm):
     class Meta:
         model = Round3
-        fields = ['team_no', 'team_name', 'mode', 'member_name', 'member2', 'member3', 'member4', 'youtube_link3', 'github_link3', 'ppt3_link']
+        fields = ['team_email','team_no', 'team_name', 'mode', 'member_name', 'member2', 'member3', 'member4', 'youtube_link3', 'github_link3', 'ppt3_link']
