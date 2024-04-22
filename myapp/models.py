@@ -34,7 +34,7 @@ class Round2(models.Model):
     member2 = models.CharField(max_length=255, blank=True, null=True)
     member3 = models.CharField(max_length=255, blank=True, null=True)
     member4 = models.CharField(max_length=255, blank=True, null=True)
-    youtube_link = models.URLField(max_length=255) 
+    youtube_link = models.URLField(max_length=255, blank=True, null=True) 
     github_link2 = models.URLField(max_length=255)
     ppt_link2 = models.URLField(blank=True)
 
