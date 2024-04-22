@@ -25,7 +25,8 @@ class Round1(models.Model):
     def __str__(self):
         return f"Round 1 - Team {self.team_no}"
     
-class Round2(models.Model):    
+class Round2(models.Model): 
+    team_email = models.EmailField(unique=True, blank=True)   
     team_no = models.IntegerField(unique=True)
     team_name = models.CharField(max_length=255)
     mode = models.CharField(max_length=50)
