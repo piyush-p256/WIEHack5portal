@@ -97,13 +97,13 @@ def judge_online_login(request):
 
             if current_round == 1:
                 request.session['judge_name'] = judge.judge_name  # Store judge's name in session
-                return redirect('offline_judge_round1')
+                return redirect('judge_round1')
             elif current_round == 2:
                 request.session['judge_name'] = judge.judge_name  # Store judge's name in session
-                return redirect('offline_judge_round2')
+                return redirect('judge_round2')
             elif current_round == 3:
                 request.session['judge_name'] = judge.judge_name  # Store judge's name in session
-                return redirect('offline_judge_round3')
+                return redirect('judge_round3')
             else:
                 return redirect('invalid_round')  # Add this view for custom handling
 
