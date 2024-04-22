@@ -250,52 +250,61 @@ def offline_judge_round3(request):
 
 
 #round1upload
+
+#round1upload
 def round1_upload(request):
     team_email = request.session.get('team_email')  # Retrieve team_email from session
-    
-    if request.method == 'POST':
-        form = Round1Form(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('success_page')  # Redirect to success page or another URL
-    else:
-        form = Round1Form()
-    
-    context = {'form': form, 'team_email': team_email}  # Pass team_email to the context
-    return render(request, 'round1-upload.html', context)
+    universal_settings = UniversalSettings.objects.first()  # Get the UniversalSettings instance
 
+    if universal_settings and universal_settings.upload:  # Check if submissions are allowed
+        if request.method == 'POST':
+            form = Round1Form(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('success_page')  # Redirect to success page or another URL
+        else:
+            form = Round1Form()
+    
+        context = {'form': form, 'team_email': team_email}  # Pass team_email to the context
+        return render(request, 'round1-upload.html', context)
+    else:
+        return render(request, 'submission_not_started.html')
 
 
 #round2upload
 
-
 def round2_upload(request):
     team_email = request.session.get('team_email')  # Retrieve team_email from session
+    universal_settings = UniversalSettings.objects.first()  # Get the UniversalSettings instance
+
+    if universal_settings and universal_settings.upload:  # Check if submissions are allowed
+        if request.method == 'POST':
+            form = Round2UploadForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('success_page')  # Redirect to success page or another URL
+        else:
+            form = Round2UploadForm()
     
-    if request.method == 'POST':
-        form = Round2UploadForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('success_page')  # Redirect to success page or another URL
+        context = {'form': form, 'team_email': team_email}  # Pass team_email to the context
+        return render(request, 'round2-upload.html', context)
     else:
-        form = Round2UploadForm()
-    
-    context = {'form': form, 'team_email': team_email}  # Pass team_email to the context
-    return render(request, 'round2-upload.html', context)
-
-
-#upload round3
+        return render(request, 'submission_not_started.html')
 
 def round3_upload(request):
     team_email = request.session.get('team_email')  # Retrieve team_email from session
+    universal_settings = UniversalSettings.objects.first()  # Get the UniversalSettings instance
+
+    if universal_settings and universal_settings.upload:  # Check if submissions are allowed
+        if request.method == 'POST':
+            form = Round3UploadForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('success_page')  # Redirect to success page or another URL
+        else:
+            form = Round3UploadForm()
     
-    if request.method == 'POST':
-        form = Round3UploadForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('success_page')  # Redirect to success page after form submission
+        context = {'form': form, 'team_email': team_email}  # Pass team_email to the context
+        return render(request, 'round3-upload.html', context)
     else:
-        form = Round3UploadForm()
-    
-    context = {'form': form, 'team_email': team_email}  # Pass team_email to the context
-    return render(request, 'round3-upload.html', context)
+        return render(request, 'submission_not_started.html')
