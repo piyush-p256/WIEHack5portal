@@ -61,6 +61,10 @@
             <form class="poppins-semibold" method="POST">
               {% csrf_token %}
               <div class="mb-2">
+                <label class="form-label" for="id_team_email">Team Email.:</label>
+                <input class="form-control poppins-regular" type="email" id="id_team_email" name="team_email" placeholder="Enter Team email" required>
+              </div>
+              <div class="mb-2">
                 <label class="form-label" for="id_team_no">Team No.:</label>
                 <input class="form-control poppins-regular" type="number" id="id_team_no" name="team_no" placeholder="Enter Team No." required>
               </div>
