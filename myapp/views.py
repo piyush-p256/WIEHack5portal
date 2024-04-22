@@ -281,8 +281,21 @@ def round2_upload(request):
         if request.method == 'POST':
             form = Round2UploadForm(request.POST)
             if form.is_valid():
+                team_no = form.cleaned_data['team_no']
+                email = form.cleaned_data['team_email']
+                
+                # Check if team_no and email belong to the same team in the Team model
+                try:
+                    team = Team.objects.get(team_no=team_no, email=email)
+                except Team.DoesNotExist:
+                    # Team not found for the given team_no and email
+                    form.add_error(None, 'Invalid team details!')
+                    context = {'form': form, 'team_email': team_email}
+                    return render(request, 'round2-upload.html', context)
+                
+                # Save the form data
                 form.save()
-                return redirect('success_page')  # Redirect to success page or another URL
+                return redirect('success_page')  # Redirect to success page after successful form submission
         else:
             form = Round2UploadForm()
     
@@ -290,6 +303,7 @@ def round2_upload(request):
         return render(request, 'round2-upload.html', context)
     else:
         return render(request, 'submission_not_started.html')
+
 
 def round3_upload(request):
     team_email = request.session.get('team_email')  # Retrieve team_email from session
