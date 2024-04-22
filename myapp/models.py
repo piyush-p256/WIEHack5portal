@@ -43,6 +43,7 @@ class Round2(models.Model):
 
 
 class Round3(models.Model): 
+    team_email = models.EmailField(unique=True, blank=True)
     team_no = models.IntegerField(unique=True)
     team_name = models.CharField(max_length=255)
     mode = models.CharField(max_length=50)
