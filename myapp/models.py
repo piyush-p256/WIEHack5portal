@@ -51,8 +51,8 @@ class Round3(models.Model):
     member2 = models.CharField(max_length=255, blank=True, null=True)
     member3 = models.CharField(max_length=255, blank=True, null=True)
     member4 = models.CharField(max_length=255, blank=True, null=True)
-    youtube_link3 = models.URLField(max_length=255, blank=True) 
-    github_link3 = models.URLField(max_length=255)
+    youtube_link3 = models.URLField(max_length=255, blank=True, null=True) 
+    github_link3 = models.URLField(max_length=255, blank=True, null=True)
     ppt3_link = models.URLField(max_length=255)
 
     def __str__(self):
