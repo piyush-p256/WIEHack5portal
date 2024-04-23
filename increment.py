@@ -20,7 +20,7 @@ def update_round_no_from_excel(file_path):
         team_no = row[0]  # Assuming team_no is in the first column
         team = Team.objects.filter(team_no=team_no).first()
         if team:
-            team.round_no = 2
+            team.round_no = 3
             team.save()
             print(f"Updated round_no for team {team_no}")
         else:
