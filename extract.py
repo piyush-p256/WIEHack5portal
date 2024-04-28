@@ -9,16 +9,16 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
 django.setup()
 
 # Now you can import your models
-from myapp.models import Round3
+from myapp.models import Round2
 
 # Get data from Round3 model
-round3_data = Round3.objects.all().values()
+round2_data = Round2.objects.all().values()
 
 # Convert queryset to DataFrame
-df = pd.DataFrame(list(round3_data))
+df = pd.DataFrame(list(round2_data))
 
 # Define the Excel file path
-excel_file_path = 'round3_data.xlsx'
+excel_file_path = 'round2_data.xlsx'
 
 # Write DataFrame to Excel
 df.to_excel(excel_file_path, index=False)
