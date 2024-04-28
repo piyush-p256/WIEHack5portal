@@ -1,0 +1,137 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #0a0a0a;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+    /* overflow-y: scroll; */
+    color: #ffffff;
+}
+
+.scrollable-div::-webkit-scrollbar {
+    width: 10px;
+    /* Set the width of the scrollbar */
+}
+
+.scrollable-div::-webkit-scrollbar-track {
+    background: #0a0a0a;
+    /* Set the background color of the scrollbar track */
+}
+
+.scrollable-div::-webkit-scrollbar-thumb {
+    background-color: #FFA7FF;
+    /* Set the color of the scrollbar thumb */
+    border-radius: 10px;
+    /* Set the radius of the scrollbar thumb */
+}
+
+
+#wiehack_logo {
+    width: 80px;
+    margin-left: 2rem;
+}
+
+#ieeebvcoe_logo {
+    height: 30px;
+    width: 140px;
+}
+
+.pink {
+    color: #FFA7FF;
+}
+
+.purple {
+    color: #4F4FE6;
+}
+
+.skyblue {
+    color: #6ed8fe;
+}
+
+.white {
+    color: #ffffff;
+}
+
+.left-div {
+    background-color: #0a0a0a;
+    width: 100vw;
+    height: 100vh;
+}
+
+.right-div {
+    /* background: radial-gradient(circle, rgba(0,0,0,1) 60%, rgba(111,0,68,1) 100%); */
+    background: linear-gradient(-45deg, rgb(10, 10, 10) 48%, rgba(111, 0, 68, 1) 80%);
+    width: 100vw;
+    height: 100vh;
+}
+
+.btn-dark {
+    background-color: #FFA7FF;
+    color: #0a0a0a;
+    font-weight: 500;
+}
+
+.btn {
+    transition: all 0.3s ease-in-out;
+}
+
+.btn:hover {
+    transform: scale(1.1);
+}
+
+.btn:hover {
+    background-color: #000000;
+    border: 1px solid #FFA7FF;
+    color: #FFA7FF;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+a:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.scrollable-div {
+    overflow-y: auto;
+    height: 70vh;
+}
+
+.table thead tr th {
+    color: #ffffff;
+}
+
+.table tbody tr td {
+    color: #ffffff;
+}
+
+@media only screen and (max-width: 992px) {
+    #desktop {
+      display: none;
+      visibility: hidden;
+      width: 0vw;
+      height: 0vh;
+    }
+  }
+  
+  @media only screen and (min-width: 993px) {
+    #mobile {
+      display: none;
+      visibility: hidden;
+      
+    }
+  }
+
+  #mobile {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(-45deg, rgb(10, 10, 10) 48%, rgba(111, 0, 68, 1) 80%);
+  }
+/* For mobile screen */
+
+/*  */
